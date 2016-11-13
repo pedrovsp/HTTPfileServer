@@ -123,6 +123,27 @@ class RequestHandler(threading.Thread):
                 print(return_message)
                 connection.sendall(b'%s' % return_message.encode('utf-8'))
                 return
+            elif method == "ADD":
+                (x, node) = self.do_post(self.tree, nodes, body)
+                return_message = self.set_return_message(x, method, node)
+                print(requestLine)
+                print(header)
+                print(body)
+                print("-----------> Response message")
+                print(return_message)
+                connection.sendall(b'%s' % return_message.encode('utf-8'))
+                return
+            elif method == "UPDATE":
+                (x, node) = self.do_put(self.tree, nodes, body)
+                return_message = self.set_return_message(x, method, node)
+                return_message = return_message
+                print(requestLine)
+                print(header)
+                print(body)
+                print("-----------> Response message")
+                print(return_message)
+                connection.sendall(b'%s' % return_message.encode('utf-8'))
+                return
             else:
                 print("\n Invalid Method\n")
                 return
@@ -340,6 +361,16 @@ class RequestHandler(threading.Thread):
             elif(ret_request == 400):
                 message = "POST 400 Empty Body or File Already Exists"
             return message
+        if request == "ADD":
+            if(ret_request == 200):
+                l1 = "ADD 200 OK" + self._CRLF
+                l2 = "Version:  " + str(node.version) + self._CRLF
+                l3 = "Creation:  " + node.creation.strftime("%Y-%m-%d %H:%M:%S") + self._CRLF
+                l4 = "Modification:  " + node.modification.strftime("%Y-%m-%d %H:%M:%S") + self._CRLF
+                message = l1+l2+l3+l4
+            elif(ret_request == 400):
+                message = "ADD 400 Empty Body or File Already Exists"
+            return message
         elif request == "GET":
             if(ret_request == 200):
                 l1 = "GET 200 OK" + self._CRLF
@@ -361,6 +392,18 @@ class RequestHandler(threading.Thread):
                 message = "PUT 400 Empty Body or File Doen't Exists"
             elif(ret_request == 404):
                 message = "PUT 404 Invalid path"
+            return message
+        elif request == "UPDATE":
+            if(ret_request == 200):
+                l1 = "UPDATE 200 OK" + self._CRLF
+                l2 = "Version:  " + str(node.version) + self._CRLF
+                l3 = "Creation:  " + node.creation.strftime("%Y-%m-%d %H:%M:%S") + self._CRLF
+                l4 = "Modification:  " + node.modification.strftime("%Y-%m-%d %H:%M:%S") + self._CRLF
+                message = l1+l2+l3+l4
+            elif(ret_request == 400):
+                message = "UPDATE 400" + " Empty Body or File Doen't Exists"
+            elif(ret_request == 404):
+                message = "UPDATE 404 Invalid path"
             return message
         elif request == "HEAD":
             if(ret_request == 200):
@@ -396,7 +439,7 @@ class RequestHandler(threading.Thread):
             return message
         elif re.match("UPDATE\+[0-9]+", request):
             if(ret_request == 200):
-                l1 = "UpDATE+VERSION 200 OK" + self._CRLF
+                l1 = "UPDATE+VERSION 200 OK" + self._CRLF
                 l2 = "Version:  " + str(node.version) + self._CRLF
                 l3 = "Creation:  " + node.creation.strftime("%Y-%m-%d %H:%M:%S") + self._CRLF
                 l4 = "Modification:  " + node.modification.strftime("%Y-%m-%d %H:%M:%S") + self._CRLF

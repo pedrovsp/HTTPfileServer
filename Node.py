@@ -1,5 +1,4 @@
 import datetime
-import threading
 
 class Node():
     def __init__(self, name, data):
@@ -9,8 +8,6 @@ class Node():
         self.modification = datetime.datetime.now()
         self.version = 0
         self.children = []
-        self.lock = threading.RLock()
-
 
     def print_node(self):
         print(self.name)

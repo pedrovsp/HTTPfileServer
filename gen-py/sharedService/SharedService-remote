@@ -24,7 +24,13 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] function [arg1 [arg2...]]')
   print('')
   print('Functions:')
-  print('  Node getNode(string path)')
+  print('   get_children(Node node,  returnList)')
+  print('  Node alter_data(Node node, string data)')
+  print('  Node search_name(Node node, string name)')
+  print('  Node delete_child(Node node, Node child)')
+  print('  Node add_data(Node node, string data)')
+  print('  Node add_child(Node node, Node child)')
+  print('  Node NodeInit(string name, string data)')
   print('')
   sys.exit(0)
 
@@ -81,11 +87,47 @@ protocol = TBinaryProtocol.TBinaryProtocol(transport)
 client = SharedService.Client(protocol)
 transport.open()
 
-if cmd == 'getNode':
-  if len(args) != 1:
-    print('getNode requires 1 args')
+if cmd == 'get_children':
+  if len(args) != 2:
+    print('get_children requires 2 args')
     sys.exit(1)
-  pp.pprint(client.getNode(args[0],))
+  pp.pprint(client.get_children(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'alter_data':
+  if len(args) != 2:
+    print('alter_data requires 2 args')
+    sys.exit(1)
+  pp.pprint(client.alter_data(eval(args[0]),args[1],))
+
+elif cmd == 'search_name':
+  if len(args) != 2:
+    print('search_name requires 2 args')
+    sys.exit(1)
+  pp.pprint(client.search_name(eval(args[0]),args[1],))
+
+elif cmd == 'delete_child':
+  if len(args) != 2:
+    print('delete_child requires 2 args')
+    sys.exit(1)
+  pp.pprint(client.delete_child(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'add_data':
+  if len(args) != 2:
+    print('add_data requires 2 args')
+    sys.exit(1)
+  pp.pprint(client.add_data(eval(args[0]),args[1],))
+
+elif cmd == 'add_child':
+  if len(args) != 2:
+    print('add_child requires 2 args')
+    sys.exit(1)
+  pp.pprint(client.add_child(eval(args[0]),eval(args[1]),))
+
+elif cmd == 'NodeInit':
+  if len(args) != 2:
+    print('NodeInit requires 2 args')
+    sys.exit(1)
+  pp.pprint(client.NodeInit(args[0],args[1],))
 
 else:
   print('Unrecognized method %s' % cmd)

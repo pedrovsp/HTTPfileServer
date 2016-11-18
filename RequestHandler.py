@@ -9,7 +9,6 @@ sys.path.append('gen-py')
 from sharedService.SharedService import *
 from requestHandler.RequestHandler import *
 
-#import pythrift
 from thrift.transport import TSocket
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
@@ -19,12 +18,6 @@ class RequestHandler():
     #Quebra de linha
     _CRLF = '\r\n'
 
-    #Sucesso
-    _200 = 200
-
-    #Caminho nao encontrado
-    _404 = 404
-
     def __init__(self):
         self.tree = NodeInit("Root", None)
 
@@ -32,9 +25,9 @@ class RequestHandler():
         if(nodes == []):
             if(tree.data == None and data != ''):
                 tree.data = data
-                return (200, tree)
+                return "Success 200"
             else:
-                return (400, None)
+                return "Error 404"
 
         if(search_name(current_node, nodes[0]) != None):
             aux = nodes[0]
@@ -56,42 +49,42 @@ class RequestHandler():
                 current_node = search_name(current_node, nodes[counter])
                 counter += 1
             else:
-                return (404, None)
+                return "Error 404"
 
         if(current_node.data != None):
-            return (200, current_node)
+            return "Success 200"
         else:
-            return (404, None)
+            return "Error 404"
 
     def do_put(self, tree, nodes, data):
         if(nodes == []):
             if(tree.data != None and data != ''):
                 alter_data(tree, data)
-                return (200, tree)
+                return "Success 200"
             else:
-                return (400, None)
+                return "Error 400"
 
         if(search_name(tree, nodes[0]) != None):
             aux = nodes[0]
             del(nodes[0])
             return self.do_put(search_name(tree, aux), nodes, data)
         else:
-            return (404, None)
+            return "Error 404"
 
     def do_update_version(self, tree, nodes, data, version):
         if(nodes == []):
             if(tree.data != None and data != '' and tree.version == int(version)):
                 tree.alter_data(tree, data)
-                return (200, tree)
+                return "Success 200"
             else:
-                return (400, None)
+                return "Error 400"
 
         if(search_name(tree, nodes[0]) != None):
             aux = nodes[0]
             del(nodes[0])
             return self.do_update_version(search_name(aux), nodes, data, version)
         else:
-            return (404, None)
+            return "Error 404"
 
     def do_delete(self, nodes):
         current_node = self.tree
@@ -104,10 +97,10 @@ class RequestHandler():
                 current_node = self.search_name(current_node, nodes[counter])
                 counter += 1
             else:
-                return (404, None)
+                return "Error 404"
 
         self.delete_child(current_node, self.search_name(current_node, nodes[counter]))
-        return (200, None)
+        return "Sucess 200"
 
     def do_delete_version(self, nodes, version):
         current_node = self.tree
@@ -120,13 +113,13 @@ class RequestHandler():
                 current_node = search_name(current_node, nodes[counter])
                 counter += 1
             else:
-                return (404, None)
+                return "Error 404"
 
         if(search_name(current_node, nodes[counter]).version != int(version)):
-            return (403, None)
+            return "Error 403"
 
         delete_child(search_name(current_node, nodes[counter]))
-        return (200, None)
+        return "Success 200"
 
     def do_head(self, nodes):
         current_node = self.tree
@@ -137,12 +130,14 @@ class RequestHandler():
                 current_node = search_name(current_node, nodes[counter])
                 counter += 1
             else:
-                return (404, None)
+                return "Error 404"
 
         if(current_node.data != None):
-            return (200, current_node)
+            return "Success 200"
+            #return (200, current_node)
         else:
-            return (404, None)
+            return "Error 404"
+            #return (404, None)
 
     def do_list(self, nodes):
         current_node = self.tree
@@ -153,24 +148,27 @@ class RequestHandler():
                 current_node = search_name(current_node, nodes[counter])
                 counter += 1
             else:
-                return (404, None)
+                return "Error 404"
+                #return (404, None)
 
         if(current_node.children != None):
-            return (200, current_node)
+            return "Success 200"
+            #return (200, current_node)
         else:
-            return (404, None)
+            return "Error 404"
+            #return (404, None)
 
     def add_child(self, node, child):
         node.children.append(child)
         node.modification = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         node.version += 1
-        return
+        return node
 
     def add_data(self, node, data):
         node.data = data
         node.modification = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         node.version += 1
-        return
+        return node
 
     def delete_child(self, node, child):
         node.children.remove(child)

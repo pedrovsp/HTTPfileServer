@@ -1,4 +1,10 @@
 import socket
+import sys
+
+sys.path.append('gen-py')
+
+from requestHandler import RequestHandler
+from requestHandler import ttypes
 
 from thrift.transport   import TSocket
 from thrift.transport   import TTransport

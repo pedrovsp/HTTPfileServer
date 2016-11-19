@@ -8,7 +8,7 @@ struct Node
     3:datetime creation,
     4:datetime modification,
     5:i32 version = 0,
-    6:list<Node> children,
+    6:list<string> children,
 }
 
 service SharedService

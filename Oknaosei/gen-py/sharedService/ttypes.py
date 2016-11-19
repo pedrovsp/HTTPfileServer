@@ -35,7 +35,7 @@ class Node:
     (3, TType.STRING, 'creation', None, None, ), # 3
     (4, TType.STRING, 'modification', None, None, ), # 4
     (5, TType.I32, 'version', None, 0, ), # 5
-    (6, TType.LIST, 'children', (TType.STRING,None), None, ), # 6
+    (6, TType.LIST, 'children', (TType.STRUCT,(Node, Node.thrift_spec)), None, ), # 6
   )
 
   def __init__(self, name=None, data=None, creation=None, modification=None, version=thrift_spec[5][4], children=None,):
@@ -85,7 +85,8 @@ class Node:
           self.children = []
           (_etype3, _size0) = iprot.readListBegin()
           for _i4 in xrange(_size0):
-            _elem5 = iprot.readString()
+            _elem5 = Node()
+            _elem5.read(iprot)
             self.children.append(_elem5)
           iprot.readListEnd()
         else:
@@ -122,9 +123,9 @@ class Node:
       oprot.writeFieldEnd()
     if self.children is not None:
       oprot.writeFieldBegin('children', TType.LIST, 6)
-      oprot.writeListBegin(TType.STRING, len(self.children))
+      oprot.writeListBegin(TType.STRUCT, len(self.children))
       for iter6 in self.children:
-        oprot.writeString(iter6)
+        iter6.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()

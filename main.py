@@ -1,7 +1,7 @@
 import sys
-import Server
+from Server import *
 
 port = int(sys.argv[1])
 
-server = Server.Server()
+server = Server()
 server.start(port)

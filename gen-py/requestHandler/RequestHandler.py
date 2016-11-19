@@ -7,9 +7,9 @@
 #
 
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
-import sharedService.SharedService
+from sharedService.SharedService  import *
 import logging
-from ttypes import *
+from requestHandler.ttypes import *
 from thrift.Thrift import TProcessor
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol, TProtocol

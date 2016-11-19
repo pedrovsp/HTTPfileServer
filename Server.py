@@ -3,15 +3,15 @@ import sys
 
 sys.path.append('gen-py')
 
-from requestHandler import RequestHandler
-from requestHandler import ttypes
+from requestHandler.RequestHandler import *
+from requestHandler.ttypes import *
 
 from thrift.transport   import TSocket
 from thrift.transport   import TTransport
 from thrift.protocol    import TBinaryProtocol
 from thrift.server      import TServer
 
-import RequestHandler
+from RequestHandler import *
 
 class Server(object):
 

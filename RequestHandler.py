@@ -6,8 +6,10 @@ import sys
 sys.path.append('gen-py')
 #sys.path.insert(0, glob.glob('../../lib/py/build/lib*')[0])
 
-from sharedService.SharedService import *
+# from sharedService.SharedService import *
 from requestHandler.RequestHandler import *
+from requestHandler.ttypes import *
+
 
 from thrift.transport import TSocket
 from thrift.transport import TTransport

@@ -189,7 +189,8 @@ class RqstHandler:
         return node
 
     def delete_child(self, node, child):
-        for(listN in self.nodeList):
+        nid = 0
+        for listN in self.nodeList:
             if(listN == child):
                 nid = child.id
         node.children.remove(nid)
@@ -218,7 +219,7 @@ class RqstHandler:
 
         return returnList
     def getNodeById(nid):
-        for(listN in self.nodeList):
+        for listN in self.nodeList:
             if(listN.id == nid):
                 return listN
     #  def set_return_message(self, ret_request, request, node):

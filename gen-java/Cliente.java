@@ -1,5 +1,3 @@
-package cliente;
-
 import java.io.*;
 import java.util.*;
 import org.apache.thrift.TException;
@@ -12,18 +10,18 @@ public class Cliente{
     Scanner sc = new Scanner(System.in);
     String chave = "";
     String corpoTemp = "";
-    List<String> corpo = new ArrayList();
+    List<String> corpo = new ArrayList<String>();
     String corpoFinal = "";
     int versao = 0;
     Boolean ok = false;
     String lReq = "";
     String resposta = "";
     TTransport transport;
-    
+
     public static void main(String[] args) throws IOException {
         Cliente x = new Cliente();
         x.run();
-    } 
+    }
 
     public void run() throws IOException{
 
@@ -32,7 +30,7 @@ public class Cliente{
         transport.open();
         TProtocol protocol = new TBinaryProtocol(transport);
         RequestHandler.Client client = new RequestHandler.Client(protocol);
-                
+
         while (true) {
 
             String[] tipoReq;
@@ -68,7 +66,7 @@ public class Cliente{
                             corpoFinal += temp + "\n";
                         }
                         ok = true;
-                        resposta = client.do_post(corpoFinal, chave, null);
+                        resposta = client.do_add(corpoFinal, chave, null);
                         break;
                     case "UPDATE":
                         System.out.println("Digite o nome do arquivo: ");
@@ -114,7 +112,7 @@ public class Cliente{
                         System.out.println("Digite o nome do arquivo: ");
                         chave = sc.nextLine();
                         ok = true;
-                        resposta = client.do_delete(chave);                     
+                        resposta = client.do_delete(chave);
                         break;
                     default:
                         System.out.println("Entrada invalida");
@@ -128,6 +126,6 @@ public class Cliente{
         }
         } catch (TException x) {
             x.printStackTrace();
-        } 
+        }
     }
 }

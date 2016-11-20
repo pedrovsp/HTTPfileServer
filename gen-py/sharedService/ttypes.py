@@ -17,6 +17,71 @@ except:
 
 
 
+class Counter:
+  """
+  Attributes:
+   - counter
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'counter', None, 0, ), # 1
+  )
+
+  def __init__(self, counter=thrift_spec[1][4],):
+    self.counter = counter
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.counter = iprot.readI32()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('Counter')
+    if self.counter is not None:
+      oprot.writeFieldBegin('counter', TType.I32, 1)
+      oprot.writeI32(self.counter)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.counter)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class Node:
   """
   Attributes:
@@ -25,6 +90,7 @@ class Node:
    - creation
    - modification
    - version
+   - id
    - children
   """
 
@@ -35,15 +101,17 @@ class Node:
     (3, TType.STRING, 'creation', None, None, ), # 3
     (4, TType.STRING, 'modification', None, None, ), # 4
     (5, TType.I32, 'version', None, 0, ), # 5
-    (6, TType.LIST, 'children', (TType.STRUCT,(Node, Node.thrift_spec)), None, ), # 6
+    (6, TType.I32, 'id', None, 0, ), # 6
+    (7, TType.LIST, 'children', (TType.I32,None), None, ), # 7
   )
 
-  def __init__(self, name=None, data=None, creation=None, modification=None, version=thrift_spec[5][4], children=None,):
+  def __init__(self, name=None, data=None, creation=None, modification=None, version=thrift_spec[5][4], id=thrift_spec[6][4], children=None,):
     self.name = name
     self.data = data
     self.creation = creation
     self.modification = modification
     self.version = version
+    self.id = id
     self.children = children
 
   def read(self, iprot):
@@ -81,12 +149,16 @@ class Node:
         else:
           iprot.skip(ftype)
       elif fid == 6:
+        if ftype == TType.I32:
+          self.id = iprot.readI32()
+        else:
+          iprot.skip(ftype)
+      elif fid == 7:
         if ftype == TType.LIST:
           self.children = []
           (_etype3, _size0) = iprot.readListBegin()
           for _i4 in xrange(_size0):
-            _elem5 = Node()
-            _elem5.read(iprot)
+            _elem5 = iprot.readI32()
             self.children.append(_elem5)
           iprot.readListEnd()
         else:
@@ -121,11 +193,15 @@ class Node:
       oprot.writeFieldBegin('version', TType.I32, 5)
       oprot.writeI32(self.version)
       oprot.writeFieldEnd()
+    if self.id is not None:
+      oprot.writeFieldBegin('id', TType.I32, 6)
+      oprot.writeI32(self.id)
+      oprot.writeFieldEnd()
     if self.children is not None:
-      oprot.writeFieldBegin('children', TType.LIST, 6)
-      oprot.writeListBegin(TType.STRUCT, len(self.children))
+      oprot.writeFieldBegin('children', TType.LIST, 7)
+      oprot.writeListBegin(TType.I32, len(self.children))
       for iter6 in self.children:
-        iter6.write(oprot)
+        oprot.writeI32(iter6)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -142,7 +218,82 @@ class Node:
     value = (value * 31) ^ hash(self.creation)
     value = (value * 31) ^ hash(self.modification)
     value = (value * 31) ^ hash(self.version)
+    value = (value * 31) ^ hash(self.id)
     value = (value * 31) ^ hash(self.children)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class NodeList:
+  """
+  Attributes:
+   - lista
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'lista', (TType.STRUCT,(Node, Node.thrift_spec)), None, ), # 1
+  )
+
+  def __init__(self, lista=None,):
+    self.lista = lista
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.lista = []
+          (_etype10, _size7) = iprot.readListBegin()
+          for _i11 in xrange(_size7):
+            _elem12 = Node()
+            _elem12.read(iprot)
+            self.lista.append(_elem12)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('NodeList')
+    if self.lista is not None:
+      oprot.writeFieldBegin('lista', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.lista))
+      for iter13 in self.lista:
+        iter13.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.lista)
     return value
 
   def __repr__(self):

@@ -20,43 +20,38 @@ except:
 
 
 class Iface(sharedService.SharedService.Iface):
-  def do_post(self, message, path):
+  def do_update(self, data, path, current_node):
     """
     Parameters:
-     - message
+     - data
+     - path
+     - current_node
+    """
+    pass
+
+  def do_get(self, path):
+    """
+    Parameters:
      - path
     """
     pass
 
-  def do_update(self, body, path):
+  def do_add(self, data, path, current_node):
     """
     Parameters:
-     - body
+     - data
      - path
+     - current_node
     """
     pass
 
-  def do_update_version(self, body, version, path):
+  def do_update_version(self, body, version, path, current_node):
     """
     Parameters:
      - body
      - version
      - path
-    """
-    pass
-
-  def do_delete_version(self, version, path):
-    """
-    Parameters:
-     - version
-     - path
-    """
-    pass
-
-  def do_list(self, path):
-    """
-    Parameters:
-     - path
+     - current_node
     """
     pass
 
@@ -67,7 +62,15 @@ class Iface(sharedService.SharedService.Iface):
     """
     pass
 
-  def do_get(self, path):
+  def do_delete_version(self, path, version):
+    """
+    Parameters:
+     - path
+     - version
+    """
+    pass
+
+  def do_list(self, path):
     """
     Parameters:
      - path
@@ -79,53 +82,22 @@ class Client(sharedService.SharedService.Client, Iface):
   def __init__(self, iprot, oprot=None):
     sharedService.SharedService.Client.__init__(self, iprot, oprot)
 
-  def do_post(self, message, path):
+  def do_update(self, data, path, current_node):
     """
     Parameters:
-     - message
+     - data
      - path
+     - current_node
     """
-    self.send_do_post(message, path)
-    return self.recv_do_post()
-
-  def send_do_post(self, message, path):
-    self._oprot.writeMessageBegin('do_post', TMessageType.CALL, self._seqid)
-    args = do_post_args()
-    args.message = message
-    args.path = path
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_do_post(self):
-    iprot = self._iprot
-    (fname, mtype, rseqid) = iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(iprot)
-      iprot.readMessageEnd()
-      raise x
-    result = do_post_result()
-    result.read(iprot)
-    iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "do_post failed: unknown result")
-
-  def do_update(self, body, path):
-    """
-    Parameters:
-     - body
-     - path
-    """
-    self.send_do_update(body, path)
+    self.send_do_update(data, path, current_node)
     return self.recv_do_update()
 
-  def send_do_update(self, body, path):
+  def send_do_update(self, data, path, current_node):
     self._oprot.writeMessageBegin('do_update', TMessageType.CALL, self._seqid)
     args = do_update_args()
-    args.body = body
+    args.data = data
     args.path = path
+    args.current_node = current_node
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -145,22 +117,90 @@ class Client(sharedService.SharedService.Client, Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "do_update failed: unknown result")
 
-  def do_update_version(self, body, version, path):
+  def do_get(self, path):
+    """
+    Parameters:
+     - path
+    """
+    self.send_do_get(path)
+    return self.recv_do_get()
+
+  def send_do_get(self, path):
+    self._oprot.writeMessageBegin('do_get', TMessageType.CALL, self._seqid)
+    args = do_get_args()
+    args.path = path
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_do_get(self):
+    iprot = self._iprot
+    (fname, mtype, rseqid) = iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(iprot)
+      iprot.readMessageEnd()
+      raise x
+    result = do_get_result()
+    result.read(iprot)
+    iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "do_get failed: unknown result")
+
+  def do_add(self, data, path, current_node):
+    """
+    Parameters:
+     - data
+     - path
+     - current_node
+    """
+    self.send_do_add(data, path, current_node)
+    return self.recv_do_add()
+
+  def send_do_add(self, data, path, current_node):
+    self._oprot.writeMessageBegin('do_add', TMessageType.CALL, self._seqid)
+    args = do_add_args()
+    args.data = data
+    args.path = path
+    args.current_node = current_node
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_do_add(self):
+    iprot = self._iprot
+    (fname, mtype, rseqid) = iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(iprot)
+      iprot.readMessageEnd()
+      raise x
+    result = do_add_result()
+    result.read(iprot)
+    iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "do_add failed: unknown result")
+
+  def do_update_version(self, body, version, path, current_node):
     """
     Parameters:
      - body
      - version
      - path
+     - current_node
     """
-    self.send_do_update_version(body, version, path)
+    self.send_do_update_version(body, version, path, current_node)
     return self.recv_do_update_version()
 
-  def send_do_update_version(self, body, version, path):
+  def send_do_update_version(self, body, version, path, current_node):
     self._oprot.writeMessageBegin('do_update_version', TMessageType.CALL, self._seqid)
     args = do_update_version_args()
     args.body = body
     args.version = version
     args.path = path
+    args.current_node = current_node
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -180,20 +220,51 @@ class Client(sharedService.SharedService.Client, Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "do_update_version failed: unknown result")
 
-  def do_delete_version(self, version, path):
+  def do_delete(self, path):
     """
     Parameters:
-     - version
      - path
     """
-    self.send_do_delete_version(version, path)
+    self.send_do_delete(path)
+    return self.recv_do_delete()
+
+  def send_do_delete(self, path):
+    self._oprot.writeMessageBegin('do_delete', TMessageType.CALL, self._seqid)
+    args = do_delete_args()
+    args.path = path
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_do_delete(self):
+    iprot = self._iprot
+    (fname, mtype, rseqid) = iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(iprot)
+      iprot.readMessageEnd()
+      raise x
+    result = do_delete_result()
+    result.read(iprot)
+    iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "do_delete failed: unknown result")
+
+  def do_delete_version(self, path, version):
+    """
+    Parameters:
+     - path
+     - version
+    """
+    self.send_do_delete_version(path, version)
     return self.recv_do_delete_version()
 
-  def send_do_delete_version(self, version, path):
+  def send_do_delete_version(self, path, version):
     self._oprot.writeMessageBegin('do_delete_version', TMessageType.CALL, self._seqid)
     args = do_delete_version_args()
-    args.version = version
     args.path = path
+    args.version = version
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
@@ -244,79 +315,17 @@ class Client(sharedService.SharedService.Client, Iface):
       return result.success
     raise TApplicationException(TApplicationException.MISSING_RESULT, "do_list failed: unknown result")
 
-  def do_delete(self, path):
-    """
-    Parameters:
-     - path
-    """
-    self.send_do_delete(path)
-    return self.recv_do_delete()
-
-  def send_do_delete(self, path):
-    self._oprot.writeMessageBegin('do_delete', TMessageType.CALL, self._seqid)
-    args = do_delete_args()
-    args.path = path
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_do_delete(self):
-    iprot = self._iprot
-    (fname, mtype, rseqid) = iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(iprot)
-      iprot.readMessageEnd()
-      raise x
-    result = do_delete_result()
-    result.read(iprot)
-    iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "do_delete failed: unknown result")
-
-  def do_get(self, path):
-    """
-    Parameters:
-     - path
-    """
-    self.send_do_get(path)
-    return self.recv_do_get()
-
-  def send_do_get(self, path):
-    self._oprot.writeMessageBegin('do_get', TMessageType.CALL, self._seqid)
-    args = do_get_args()
-    args.path = path
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_do_get(self):
-    iprot = self._iprot
-    (fname, mtype, rseqid) = iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(iprot)
-      iprot.readMessageEnd()
-      raise x
-    result = do_get_result()
-    result.read(iprot)
-    iprot.readMessageEnd()
-    if result.success is not None:
-      return result.success
-    raise TApplicationException(TApplicationException.MISSING_RESULT, "do_get failed: unknown result")
-
 
 class Processor(sharedService.SharedService.Processor, Iface, TProcessor):
   def __init__(self, handler):
     sharedService.SharedService.Processor.__init__(self, handler)
-    self._processMap["do_post"] = Processor.process_do_post
     self._processMap["do_update"] = Processor.process_do_update
+    self._processMap["do_get"] = Processor.process_do_get
+    self._processMap["do_add"] = Processor.process_do_add
     self._processMap["do_update_version"] = Processor.process_do_update_version
+    self._processMap["do_delete"] = Processor.process_do_delete
     self._processMap["do_delete_version"] = Processor.process_do_delete_version
     self._processMap["do_list"] = Processor.process_do_list
-    self._processMap["do_delete"] = Processor.process_do_delete
-    self._processMap["do_get"] = Processor.process_do_get
 
   def process(self, iprot, oprot):
     (name, type, seqid) = iprot.readMessageBegin()
@@ -333,32 +342,13 @@ class Processor(sharedService.SharedService.Processor, Iface, TProcessor):
       self._processMap[name](self, seqid, iprot, oprot)
     return True
 
-  def process_do_post(self, seqid, iprot, oprot):
-    args = do_post_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = do_post_result()
-    try:
-      result.success = self._handler.do_post(args.message, args.path)
-      msg_type = TMessageType.REPLY
-    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
-      raise
-    except Exception as ex:
-      msg_type = TMessageType.EXCEPTION
-      logging.exception(ex)
-      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
-    oprot.writeMessageBegin("do_post", msg_type, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
   def process_do_update(self, seqid, iprot, oprot):
     args = do_update_args()
     args.read(iprot)
     iprot.readMessageEnd()
     result = do_update_result()
     try:
-      result.success = self._handler.do_update(args.body, args.path)
+      result.success = self._handler.do_update(args.data, args.path, args.current_node)
       msg_type = TMessageType.REPLY
     except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
       raise
@@ -371,13 +361,51 @@ class Processor(sharedService.SharedService.Processor, Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
+  def process_do_get(self, seqid, iprot, oprot):
+    args = do_get_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = do_get_result()
+    try:
+      result.success = self._handler.do_get(args.path)
+      msg_type = TMessageType.REPLY
+    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+      raise
+    except Exception as ex:
+      msg_type = TMessageType.EXCEPTION
+      logging.exception(ex)
+      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+    oprot.writeMessageBegin("do_get", msg_type, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_do_add(self, seqid, iprot, oprot):
+    args = do_add_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = do_add_result()
+    try:
+      result.success = self._handler.do_add(args.data, args.path, args.current_node)
+      msg_type = TMessageType.REPLY
+    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+      raise
+    except Exception as ex:
+      msg_type = TMessageType.EXCEPTION
+      logging.exception(ex)
+      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+    oprot.writeMessageBegin("do_add", msg_type, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
   def process_do_update_version(self, seqid, iprot, oprot):
     args = do_update_version_args()
     args.read(iprot)
     iprot.readMessageEnd()
     result = do_update_version_result()
     try:
-      result.success = self._handler.do_update_version(args.body, args.version, args.path)
+      result.success = self._handler.do_update_version(args.body, args.version, args.path, args.current_node)
       msg_type = TMessageType.REPLY
     except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
       raise
@@ -390,13 +418,32 @@ class Processor(sharedService.SharedService.Processor, Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
+  def process_do_delete(self, seqid, iprot, oprot):
+    args = do_delete_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = do_delete_result()
+    try:
+      result.success = self._handler.do_delete(args.path)
+      msg_type = TMessageType.REPLY
+    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+      raise
+    except Exception as ex:
+      msg_type = TMessageType.EXCEPTION
+      logging.exception(ex)
+      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+    oprot.writeMessageBegin("do_delete", msg_type, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
   def process_do_delete_version(self, seqid, iprot, oprot):
     args = do_delete_version_args()
     args.read(iprot)
     iprot.readMessageEnd()
     result = do_delete_version_result()
     try:
-      result.success = self._handler.do_delete_version(args.version, args.path)
+      result.success = self._handler.do_delete_version(args.path, args.version)
       msg_type = TMessageType.REPLY
     except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
       raise
@@ -428,205 +475,28 @@ class Processor(sharedService.SharedService.Processor, Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_do_delete(self, seqid, iprot, oprot):
-    args = do_delete_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = do_delete_result()
-    try:
-      result.success = self._handler.do_delete(args.path)
-      msg_type = TMessageType.REPLY
-    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
-      raise
-    except Exception as ex:
-      msg_type = TMessageType.EXCEPTION
-      logging.exception(ex)
-      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
-    oprot.writeMessageBegin("do_delete", msg_type, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_do_get(self, seqid, iprot, oprot):
-    args = do_get_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = do_get_result()
-    try:
-      result.success = self._handler.do_get(args.path)
-      msg_type = TMessageType.REPLY
-    except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
-      raise
-    except Exception as ex:
-      msg_type = TMessageType.EXCEPTION
-      logging.exception(ex)
-      result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
-    oprot.writeMessageBegin("do_get", msg_type, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
 
 # HELPER FUNCTIONS AND STRUCTURES
-
-class do_post_args:
-  """
-  Attributes:
-   - message
-   - path
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'message', None, None, ), # 1
-    (2, TType.STRING, 'path', None, None, ), # 2
-  )
-
-  def __init__(self, message=None, path=None,):
-    self.message = message
-    self.path = path
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.message = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.STRING:
-          self.path = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('do_post_args')
-    if self.message is not None:
-      oprot.writeFieldBegin('message', TType.STRING, 1)
-      oprot.writeString(self.message)
-      oprot.writeFieldEnd()
-    if self.path is not None:
-      oprot.writeFieldBegin('path', TType.STRING, 2)
-      oprot.writeString(self.path)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.message)
-    value = (value * 31) ^ hash(self.path)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class do_post_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRING:
-          self.success = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('do_post_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRING, 0)
-      oprot.writeString(self.success)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.success)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
 
 class do_update_args:
   """
   Attributes:
-   - body
+   - data
    - path
+   - current_node
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'body', None, None, ), # 1
+    (1, TType.STRING, 'data', None, None, ), # 1
     (2, TType.STRING, 'path', None, None, ), # 2
+    (3, TType.STRUCT, 'current_node', (sharedService.ttypes.Node, sharedService.ttypes.Node.thrift_spec), None, ), # 3
   )
 
-  def __init__(self, body=None, path=None,):
-    self.body = body
+  def __init__(self, data=None, path=None, current_node=None,):
+    self.data = data
     self.path = path
+    self.current_node = current_node
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -639,12 +509,18 @@ class do_update_args:
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.body = iprot.readString()
+          self.data = iprot.readString()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.STRING:
           self.path = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.current_node = sharedService.ttypes.Node()
+          self.current_node.read(iprot)
         else:
           iprot.skip(ftype)
       else:
@@ -657,13 +533,17 @@ class do_update_args:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('do_update_args')
-    if self.body is not None:
-      oprot.writeFieldBegin('body', TType.STRING, 1)
-      oprot.writeString(self.body)
+    if self.data is not None:
+      oprot.writeFieldBegin('data', TType.STRING, 1)
+      oprot.writeString(self.data)
       oprot.writeFieldEnd()
     if self.path is not None:
       oprot.writeFieldBegin('path', TType.STRING, 2)
       oprot.writeString(self.path)
+      oprot.writeFieldEnd()
+    if self.current_node is not None:
+      oprot.writeFieldBegin('current_node', TType.STRUCT, 3)
+      self.current_node.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -674,8 +554,9 @@ class do_update_args:
 
   def __hash__(self):
     value = 17
-    value = (value * 31) ^ hash(self.body)
+    value = (value * 31) ^ hash(self.data)
     value = (value * 31) ^ hash(self.path)
+    value = (value * 31) ^ hash(self.current_node)
     return value
 
   def __repr__(self):
@@ -753,12 +634,298 @@ class do_update_result:
   def __ne__(self, other):
     return not (self == other)
 
+class do_get_args:
+  """
+  Attributes:
+   - path
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'path', None, None, ), # 1
+  )
+
+  def __init__(self, path=None,):
+    self.path = path
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.path = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('do_get_args')
+    if self.path is not None:
+      oprot.writeFieldBegin('path', TType.STRING, 1)
+      oprot.writeString(self.path)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.path)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class do_get_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRING, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRING:
+          self.success = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('do_get_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRING, 0)
+      oprot.writeString(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class do_add_args:
+  """
+  Attributes:
+   - data
+   - path
+   - current_node
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'data', None, None, ), # 1
+    (2, TType.STRING, 'path', None, None, ), # 2
+    (3, TType.STRUCT, 'current_node', (sharedService.ttypes.Node, sharedService.ttypes.Node.thrift_spec), None, ), # 3
+  )
+
+  def __init__(self, data=None, path=None, current_node=None,):
+    self.data = data
+    self.path = path
+    self.current_node = current_node
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.data = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.path = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.current_node = sharedService.ttypes.Node()
+          self.current_node.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('do_add_args')
+    if self.data is not None:
+      oprot.writeFieldBegin('data', TType.STRING, 1)
+      oprot.writeString(self.data)
+      oprot.writeFieldEnd()
+    if self.path is not None:
+      oprot.writeFieldBegin('path', TType.STRING, 2)
+      oprot.writeString(self.path)
+      oprot.writeFieldEnd()
+    if self.current_node is not None:
+      oprot.writeFieldBegin('current_node', TType.STRUCT, 3)
+      self.current_node.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.data)
+    value = (value * 31) ^ hash(self.path)
+    value = (value * 31) ^ hash(self.current_node)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class do_add_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRING, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRING:
+          self.success = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('do_add_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRING, 0)
+      oprot.writeString(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class do_update_version_args:
   """
   Attributes:
    - body
    - version
    - path
+   - current_node
   """
 
   thrift_spec = (
@@ -766,12 +933,14 @@ class do_update_version_args:
     (1, TType.STRING, 'body', None, None, ), # 1
     (2, TType.I32, 'version', None, None, ), # 2
     (3, TType.STRING, 'path', None, None, ), # 3
+    (4, TType.STRUCT, 'current_node', (sharedService.ttypes.Node, sharedService.ttypes.Node.thrift_spec), None, ), # 4
   )
 
-  def __init__(self, body=None, version=None, path=None,):
+  def __init__(self, body=None, version=None, path=None, current_node=None,):
     self.body = body
     self.version = version
     self.path = path
+    self.current_node = current_node
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -797,6 +966,12 @@ class do_update_version_args:
           self.path = iprot.readString()
         else:
           iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRUCT:
+          self.current_node = sharedService.ttypes.Node()
+          self.current_node.read(iprot)
+        else:
+          iprot.skip(ftype)
       else:
         iprot.skip(ftype)
       iprot.readFieldEnd()
@@ -819,6 +994,10 @@ class do_update_version_args:
       oprot.writeFieldBegin('path', TType.STRING, 3)
       oprot.writeString(self.path)
       oprot.writeFieldEnd()
+    if self.current_node is not None:
+      oprot.writeFieldBegin('current_node', TType.STRUCT, 4)
+      self.current_node.write(oprot)
+      oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -831,6 +1010,7 @@ class do_update_version_args:
     value = (value * 31) ^ hash(self.body)
     value = (value * 31) ^ hash(self.version)
     value = (value * 31) ^ hash(self.path)
+    value = (value * 31) ^ hash(self.current_node)
     return value
 
   def __repr__(self):
@@ -908,21 +1088,18 @@ class do_update_version_result:
   def __ne__(self, other):
     return not (self == other)
 
-class do_delete_version_args:
+class do_delete_args:
   """
   Attributes:
-   - version
    - path
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'version', None, None, ), # 1
-    (2, TType.STRING, 'path', None, None, ), # 2
+    (1, TType.STRING, 'path', None, None, ), # 1
   )
 
-  def __init__(self, version=None, path=None,):
-    self.version = version
+  def __init__(self, path=None,):
     self.path = path
 
   def read(self, iprot):
@@ -935,11 +1112,6 @@ class do_delete_version_args:
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.version = iprot.readI32()
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
         if ftype == TType.STRING:
           self.path = iprot.readString()
         else:
@@ -953,13 +1125,9 @@ class do_delete_version_args:
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('do_delete_version_args')
-    if self.version is not None:
-      oprot.writeFieldBegin('version', TType.I32, 1)
-      oprot.writeI32(self.version)
-      oprot.writeFieldEnd()
+    oprot.writeStructBegin('do_delete_args')
     if self.path is not None:
-      oprot.writeFieldBegin('path', TType.STRING, 2)
+      oprot.writeFieldBegin('path', TType.STRING, 1)
       oprot.writeString(self.path)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -971,8 +1139,149 @@ class do_delete_version_args:
 
   def __hash__(self):
     value = 17
-    value = (value * 31) ^ hash(self.version)
     value = (value * 31) ^ hash(self.path)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class do_delete_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.STRING, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.STRING:
+          self.success = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('do_delete_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.STRING, 0)
+      oprot.writeString(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class do_delete_version_args:
+  """
+  Attributes:
+   - path
+   - version
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'path', None, None, ), # 1
+    (2, TType.I32, 'version', None, None, ), # 2
+  )
+
+  def __init__(self, path=None, version=None,):
+    self.path = path
+    self.version = version
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.path = iprot.readString()
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.version = iprot.readI32()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('do_delete_version_args')
+    if self.path is not None:
+      oprot.writeFieldBegin('path', TType.STRING, 1)
+      oprot.writeString(self.path)
+      oprot.writeFieldEnd()
+    if self.version is not None:
+      oprot.writeFieldBegin('version', TType.I32, 2)
+      oprot.writeI32(self.version)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.path)
+    value = (value * 31) ^ hash(self.version)
     return value
 
   def __repr__(self):
@@ -1152,264 +1461,6 @@ class do_list_result:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('do_list_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRING, 0)
-      oprot.writeString(self.success)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.success)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class do_delete_args:
-  """
-  Attributes:
-   - path
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'path', None, None, ), # 1
-  )
-
-  def __init__(self, path=None,):
-    self.path = path
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.path = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('do_delete_args')
-    if self.path is not None:
-      oprot.writeFieldBegin('path', TType.STRING, 1)
-      oprot.writeString(self.path)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.path)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class do_delete_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRING:
-          self.success = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('do_delete_result')
-    if self.success is not None:
-      oprot.writeFieldBegin('success', TType.STRING, 0)
-      oprot.writeString(self.success)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.success)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class do_get_args:
-  """
-  Attributes:
-   - path
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'path', None, None, ), # 1
-  )
-
-  def __init__(self, path=None,):
-    self.path = path
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.path = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('do_get_args')
-    if self.path is not None:
-      oprot.writeFieldBegin('path', TType.STRING, 1)
-      oprot.writeString(self.path)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __hash__(self):
-    value = 17
-    value = (value * 31) ^ hash(self.path)
-    return value
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class do_get_result:
-  """
-  Attributes:
-   - success
-  """
-
-  thrift_spec = (
-    (0, TType.STRING, 'success', None, None, ), # 0
-  )
-
-  def __init__(self, success=None,):
-    self.success = success
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 0:
-        if ftype == TType.STRING:
-          self.success = iprot.readString()
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('do_get_result')
     if self.success is not None:
       oprot.writeFieldBegin('success', TType.STRING, 0)
       oprot.writeString(self.success)

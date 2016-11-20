@@ -24,13 +24,13 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] function [arg1 [arg2...]]')
   print('')
   print('Functions:')
-  print('  string do_post(string message, string path)')
-  print('  string do_update(string body, string path)')
-  print('  string do_update_version(string body, i32 version, string path)')
-  print('  string do_delete_version(i32 version, string path)')
-  print('  string do_list(string path)')
-  print('  string do_delete(string path)')
+  print('  string do_update(string data, string path, Node current_node)')
   print('  string do_get(string path)')
+  print('  string do_add(string data, string path, Node current_node)')
+  print('  string do_update_version(string body, i32 version, string path, Node current_node)')
+  print('  string do_delete(string path)')
+  print('  string do_delete_version(string path, i32 version)')
+  print('  string do_list(string path)')
   print('   get_children(Node node,  returnList)')
   print('  Node alter_data(Node node, string data)')
   print('  Node search_name(Node node, string name)')
@@ -38,6 +38,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('  Node add_data(Node node, string data)')
   print('  Node add_child(Node node, Node child)')
   print('  Node NodeInit(string name, string data)')
+  print('  void incrementCounter()')
   print('')
   sys.exit(0)
 
@@ -94,35 +95,29 @@ protocol = TBinaryProtocol.TBinaryProtocol(transport)
 client = RequestHandler.Client(protocol)
 transport.open()
 
-if cmd == 'do_post':
-  if len(args) != 2:
-    print('do_post requires 2 args')
+if cmd == 'do_update':
+  if len(args) != 3:
+    print('do_update requires 3 args')
     sys.exit(1)
-  pp.pprint(client.do_post(args[0],args[1],))
+  pp.pprint(client.do_update(args[0],args[1],eval(args[2]),))
 
-elif cmd == 'do_update':
-  if len(args) != 2:
-    print('do_update requires 2 args')
+elif cmd == 'do_get':
+  if len(args) != 1:
+    print('do_get requires 1 args')
     sys.exit(1)
-  pp.pprint(client.do_update(args[0],args[1],))
+  pp.pprint(client.do_get(args[0],))
+
+elif cmd == 'do_add':
+  if len(args) != 3:
+    print('do_add requires 3 args')
+    sys.exit(1)
+  pp.pprint(client.do_add(args[0],args[1],eval(args[2]),))
 
 elif cmd == 'do_update_version':
-  if len(args) != 3:
-    print('do_update_version requires 3 args')
+  if len(args) != 4:
+    print('do_update_version requires 4 args')
     sys.exit(1)
-  pp.pprint(client.do_update_version(args[0],eval(args[1]),args[2],))
-
-elif cmd == 'do_delete_version':
-  if len(args) != 2:
-    print('do_delete_version requires 2 args')
-    sys.exit(1)
-  pp.pprint(client.do_delete_version(eval(args[0]),args[1],))
-
-elif cmd == 'do_list':
-  if len(args) != 1:
-    print('do_list requires 1 args')
-    sys.exit(1)
-  pp.pprint(client.do_list(args[0],))
+  pp.pprint(client.do_update_version(args[0],eval(args[1]),args[2],eval(args[3]),))
 
 elif cmd == 'do_delete':
   if len(args) != 1:
@@ -130,11 +125,17 @@ elif cmd == 'do_delete':
     sys.exit(1)
   pp.pprint(client.do_delete(args[0],))
 
-elif cmd == 'do_get':
-  if len(args) != 1:
-    print('do_get requires 1 args')
+elif cmd == 'do_delete_version':
+  if len(args) != 2:
+    print('do_delete_version requires 2 args')
     sys.exit(1)
-  pp.pprint(client.do_get(args[0],))
+  pp.pprint(client.do_delete_version(args[0],eval(args[1]),))
+
+elif cmd == 'do_list':
+  if len(args) != 1:
+    print('do_list requires 1 args')
+    sys.exit(1)
+  pp.pprint(client.do_list(args[0],))
 
 elif cmd == 'get_children':
   if len(args) != 2:
@@ -177,6 +178,12 @@ elif cmd == 'NodeInit':
     print('NodeInit requires 2 args')
     sys.exit(1)
   pp.pprint(client.NodeInit(args[0],args[1],))
+
+elif cmd == 'incrementCounter':
+  if len(args) != 0:
+    print('incrementCounter requires 0 args')
+    sys.exit(1)
+  pp.pprint(client.incrementCounter())
 
 else:
   print('Unrecognized method %s' % cmd)

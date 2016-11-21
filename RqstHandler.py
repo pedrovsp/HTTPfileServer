@@ -83,6 +83,8 @@ class RqstHandler:
             return self.set_return_message(404, "GET", current_node)
 
     def do_update(self, data, path, current_node):
+        # import pdb
+        # pdb.set_trace()
         nodes = self.clean_resource(path)
 
         if(current_node == None):
@@ -90,7 +92,7 @@ class RqstHandler:
 
         if(nodes == []):
             if(current_node.data != None and data != ''):
-                self.alter_data(current_node, data)
+                current_node = self.alter_data(current_node, data)
                 return self.set_return_message(200, "UPDATE", current_node)
             else:
                 return self.set_return_message(400, "UPDATE", current_node)
@@ -167,7 +169,7 @@ class RqstHandler:
             return self.set_return_message(400, "DELETE+VERSION", current_node)
 
         self.delete_child(current_node, self.search_name(current_node, nodes[counter]))
-        return self.set_return_message(200, "VERSION", current_node)
+        return self.set_return_message(200, "DELETE+VERSION", current_node)
 
     def do_list(self, path):
         nodes = self.clean_resource(path)
@@ -242,20 +244,20 @@ class RqstHandler:
         message = ''
         if request == "ADD":
             if(ret_request == 200):
-                l1 = "ADD 200 OK"# + self._CRLF
-                l2 = "Version:  " + str(node.version) #+ self._CRLF
-                l3 = "Creation:  " + node.creation #+ self._CRLF
-                l4 = "Modification:  " + node.modification #+ self._CRLF
+                l1 = "ADD 200 OK" + " "# + self._CRLF
+                l2 = "Version: " + str(node.version) + " "#+ self._CRLF
+                l3 = "Creation: " + node.creation + " " #+ self._CRLF
+                l4 = "Modification: " + node.modification + " " #+ self._CRLF
                 message = l1+l2+l3+l4
             elif(ret_request == 400):
                 message = "ADD 400 Empty Body or File Already Exists"
             return message
         elif request == "GET":
             if(ret_request == 200):
-                l1 = "GET 200 OK"# + self._CRLF
-                l2 = "Version:  " + str(node.version)# + self._CRLF
-                l3 = "Creation:  " + node.creation# + self._CRLF
-                l4 = "Modification:  " + node.modification# + self._CRLF
+                l1 = "GET 200 OK" + " "# + self._CRLF
+                l2 = "Version: " + str(node.version) + " "# + self._CRLF
+                l3 = "Creation: " + node.creation + " "# + self._CRLF
+                l4 = "Modification: " + node.modification + " "# + self._CRLF
                 message = l1+l2+l3+l4+node.data
             elif(ret_request == 404):
                 message = "GET 404 File not found"
@@ -307,5 +309,4 @@ class RqstHandler:
                 message = "PUT 404 Invalid path"
             return message
         else:
-            print("\n Invalid Method\n")
-            return
+            return "Invalid Method"

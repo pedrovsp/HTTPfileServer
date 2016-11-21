@@ -1,3 +1,4 @@
+package clienteteste;
 import java.io.*;
 import java.util.*;
 import org.apache.thrift.TException;
@@ -7,7 +8,7 @@ import org.apache.thrift.transport.*;
 
 public class Cliente{
 
-    Scanner sc = new Scanner(System.in);
+    static Scanner sc = new Scanner(System.in);
     String chave = "";
     String corpoTemp = "";
     List<String> corpo = new ArrayList<String>();
@@ -17,8 +18,13 @@ public class Cliente{
     String lReq = "";
     String resposta = "";
     TTransport transport;
+    static int porta;
 
     public static void main(String[] args) throws IOException {
+        //porta = Integer.parseInt(args[1]);
+        System.out.println("Digite a porta");
+        porta = Integer.parseInt(sc.nextLine());
+        sc.reset();
         Cliente x = new Cliente();
         x.run();
     }
@@ -27,7 +33,7 @@ public class Cliente{
 
         try
         {
-            transport = new TSocket("127.0.0.1", 5005);
+            transport = new TSocket("127.0.0.1", porta);
             transport.open();
             TProtocol protocol = new TBinaryProtocol(transport);
             RequestHandler.Client client = new RequestHandler.Client(protocol);
@@ -67,38 +73,49 @@ public class Cliente{
                                 corpoFinal += temp + "\n";
                             }
                             resposta = client.do_add(corpoFinal, chave, null);
+                            corpoFinal = "";
                             break;
                         case "UPDATE":
                             System.out.println("Digite o nome do arquivo: ");
                             chave = sc.nextLine();
                             System.out.println("Digite o corpo do arquivo: ");
                             corpoTemp = sc.nextLine();
-                            while (!corpoTemp.equals("-1")){
+                            while (!corpoTemp.equals("-1"))
+                            {
+                                corpo.clear();
                                 corpo.add(corpoTemp);
                                 corpoTemp = sc.nextLine();
                             }
-                            for (String temp : corpo) {
+                            
+                            for (String temp : corpo) 
+                            {
                                 corpoFinal += temp + "\n";
                             }
                             resposta = client.do_update(corpoFinal, chave, null);
+                            corpoFinal = "";
                             break;
-                        case "UPDATE+VERSION":
+                        case "UPDATE_VERSION":
                             System.out.println("Digite o nome do arquivo: ");
                             chave = sc.nextLine();
                             System.out.println("Digite a versao do arquivo: ");
                             versao = sc.nextInt();
                             System.out.println("Digite o corpo do arquivo: ");
                             corpoTemp = sc.nextLine();
-                            while (!corpoTemp.equals("-1")){
+                            while (!corpoTemp.equals("-1"))
+                            {
+                                corpo.clear();
                                 corpo.add(corpoTemp);
                                 corpoTemp = sc.nextLine();
                             }
-                            for (String temp : corpo) {
+                            
+                            for (String temp : corpo) 
+                            {
                                 corpoFinal += temp + "\n";
                             }
                             resposta = client.do_update_version(corpoFinal, versao, chave, null);
+                            corpoFinal = "";
                             break;
-                        case "DELETE+VERSION":
+                        case "DELETE_VERSION":
                             System.out.println("Digite o nome do arquivo: ");
                             chave = sc.nextLine();
                             System.out.println("Digite a versao do arquivo: ");
@@ -119,6 +136,7 @@ public class Cliente{
                             System.out.println("Entrada invalida");
                             break;
                     }
+                    sc.reset();
                     System.out.println(resposta);
                 }
                 break;

@@ -22,7 +22,7 @@ transport = TSocket.TServerSocket(host, int(sys.argv[1]))
 tfactory = TTransport.TBufferedTransportFactory()
 pfactory = TBinaryProtocol.TBinaryProtocolFactory()
 
-server = TServer.TSimpleServer(processor, transport, tfactory, pfactory)
+server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)
 
 print ("Starting python server...")
 server.serve()

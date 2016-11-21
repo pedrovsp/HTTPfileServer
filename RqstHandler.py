@@ -17,7 +17,7 @@ class RqstHandler:
     _CRLF = '\r\n'
 
     def __init__(self):
-        self.tree = Node("Root", None, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 0, 0, None)
+        self.tree = Node("Root", None, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 0, 0, [])
         self.countId = Counter(0)
         self.nodeList = NodeList([self.tree])
 
@@ -42,18 +42,20 @@ class RqstHandler:
             else:
                 return "Error 404"
 
-        if(search_name(current_node, nodes[0]) != None):
+        if(self.search_name(current_node, nodes[0]) != None):
             aux = nodes[0]
             del(nodes[0])
-            return self.do_add(data, nodes, self.search_name(current_node, aux))
+            n_path = path.split("/", 2)
+            n_path = n_path[1]
+            return self.do_add(data, n_path, self.search_name(current_node, aux))
         else:
             self.incrementCounter()
-            new_node = Node(nodes[0], None, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 0, countId.counter, None)
+            new_node = Node(nodes[0], None, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 0, self.countId.counter, [])
             self.add_child(current_node, new_node)
             aux = nodes[0]
             del(nodes[0])
             n_path = path.split("/", 2)
-            n_path =  "/" + n_path[2]
+            n_path = n_path[1]
             return self.do_add(data, n_path, self.search_name(current_node, aux))
 
     def do_get(self, path):
@@ -91,7 +93,7 @@ class RqstHandler:
             aux = nodes[0]
             del(nodes[0])
             n_path = path.split("/", 2)
-            n_path =  "/" + n_path[2]
+            n_path =  "/" + n_path[1]
             return self.do_update(data, n_path, self.search_name(current_node, aux))
         else:
             return "Error 404"
@@ -162,7 +164,7 @@ class RqstHandler:
 
         while(counter < len(nodes)):
             if(self.search_name(current_node, nodes[counter]) != None):
-                current_node = search_name(current_node, nodes[counter])
+                current_node = self.search_name(current_node, nodes[counter])
                 counter += 1
             else:
                 return "Error 404"
@@ -172,11 +174,11 @@ class RqstHandler:
         else:
             return "Error 404"
 
-    def incrementCounter():
+    def incrementCounter(self):
         self.countId.counter += 1
 
     def add_child(self, node, child):
-        node.children.append(countId.counter)
+        node.children.append(self.countId.counter)
         node.modification = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         node.version += 1
         self.nodeList.lista.append(child)
@@ -190,7 +192,7 @@ class RqstHandler:
 
     def delete_child(self, node, child):
         nid = 0
-        for listN in self.nodeList:
+        for listN in self.nodeList.lista:
             if(listN == child):
                 nid = child.id
         node.children.remove(nid)
@@ -201,8 +203,8 @@ class RqstHandler:
     def search_name(self, node, name):
         aux = 0
         while(aux < len(node.children)):
-            if(getNodeById(node.children[aux]).name == name):
-                return getNodeById(node.children[aux])
+            if(self.getNodeById(node.children[aux]).name == name):
+                return self.getNodeById(node.children[aux])
             aux += 1;
         return None
 
@@ -214,12 +216,13 @@ class RqstHandler:
 
     def get_children(self, node, returnList):
         for child in node.children:
-            returnList.append(getNodeById(child).name)
-            get_children(getNodeById(child), returnList)
+            returnList.append(self.getNodeById(child).name)
+            get_children(self.getNodeById(child), returnList)
 
         return returnList
-    def getNodeById(nid):
-        for listN in self.nodeList:
+
+    def getNodeById(self, nid):
+        for listN in self.nodeList.lista:
             if(listN.id == nid):
                 return listN
     #  def set_return_message(self, ret_request, request, node):
